@@ -12,9 +12,10 @@ RUN mkdir -p /usr/app/staticfiles/bundles
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 RUN python3 manage.py collectstatic --noinput
+RUN pip install --no-cache-dir gunicorn
 
 
 FROM static  as gunicorn
 WORKDIR /usr/app/backend
 RUN pip install gunicorn
-CMD ["gunicorn", "-w", "3", "-b", "0.0.0.0:8080", "star_burger.wsgi:application"]
+EXPOSE 8080
