@@ -6,37 +6,41 @@ services:
       - "5432:5432"
     restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=burger
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=QwsAzx
 
   frontend:
-    image: star-burger_frontend:v1.0
-    container_name: star-burger_frontend
+    container_name: frontend
     build:
       context: frontend
-      dockerfile: ./frontend/Dockerfile
     volumes:
       - staticdir:/usr/app/staticfiles
 
-  static:
-    image: star-burger_static:v1.0
+  backend:
+    container_name: backend
     build:
       context: backend
-      dockerfile: ./backend/Dockerfile
     volumes:
       - staticdir:/usr/app/staticfiles
       - mediadir:/usr/app/media
     command: >
       bash -c "gunicorn -w 3 -b 127.0.0.1:8080 star_burger.wsgi:application"
+#    environment:
+#      - DATABASE=postgres
+#      - SECRET_KEY=django-insecure-0if40nf4nf93n4
+#      - ALLOWED_HOSTS=127.0.0.1,localhost,89.111.155.22,b00bs.ru,*
+#      - DEBUG=False
+#      - DB_URL=postgresql://admin:QwsAzx@localhost/burger
+#      - YANDEX_KEY=23ad4190-fc5c-4d8a-8add-cc5634cc52e7
+#      - POST_SERVER_ITEM_ACCESS_TOKEN=5bba92f4ba5b4879a3e9ead7be8efcb9
     env_file:
-      - ./.env
+      - .env
     ports:
       - "8080:8080"
     depends_on:
-      - frontend
       - db
 
 volumes:
