@@ -1,4 +1,5 @@
-bundles/**
+.md*
+.md
 node_modules/
 media/
 
@@ -109,7 +110,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+#.env
 .venv
 env/
 venv/
@@ -144,7 +145,8 @@ cython_debug/
 .parcel-cache/
 
 .idea/
-bundles/
 
 mydata.json
-staticfiles/
+
+deploy.sh
+.gitignore

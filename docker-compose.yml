@@ -1,4 +1,4 @@
-version: "3.3"
+#version: "3.3"
 services:
   db:
     image: postgres:12.0-alpine
@@ -17,30 +17,25 @@ services:
     build:
       context: frontend
     volumes:
-      - staticdir:/usr/app/staticfiles
+      - .:/star-burger/staticfiles/
 
   backend:
     container_name: backend
     build:
       context: backend
     volumes:
-      - staticdir:/usr/app/staticfiles
-      - mediadir:/usr/app/media
+      - .:/star-burger/staticfiles/
+      - .:/star-burger/media/
     command: >
-      bash -c "gunicorn -w 3 -b 127.0.0.1:8080 star_burger.wsgi:application"
-#    environment:
-#      - DATABASE=postgres
-#      - SECRET_KEY=django-insecure-0if40nf4nf93n4
-#      - ALLOWED_HOSTS=127.0.0.1,localhost,89.111.155.22,b00bs.ru,*
-#      - DEBUG=False
-#      - DB_URL=postgresql://admin:QwsAzx@localhost/burger
-#      - YANDEX_KEY=23ad4190-fc5c-4d8a-8add-cc5634cc52e7
-#      - POST_SERVER_ITEM_ACCESS_TOKEN=5bba92f4ba5b4879a3e9ead7be8efcb9
+      bash -c "gunicorn -w 3 -b 0.0.0.0:8080 star_burger.wsgi:application"
+    environment:
+      - DEBUG=TRUE
     env_file:
       - .env
     ports:
       - "8080:8080"
     depends_on:
+      - frontend
       - db
 
 volumes:
