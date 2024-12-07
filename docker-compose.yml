@@ -1,4 +1,4 @@
-#version: "3.3"
+
 services:
   db:
     image: postgres:12.0-alpine
@@ -14,18 +14,23 @@ services:
 
   frontend:
     container_name: frontend
+    tty: true
     build:
       context: frontend
+    image: star-frontend:v1.0
+    links:
+      - "backend:be"
     volumes:
-      - .:/star-burger/staticfiles/
+      - staticdir:/star-burger/staticfiles/
 
   backend:
+    image: star-burger_gunicorn:v1.0
     container_name: backend
     build:
       context: backend
     volumes:
-      - .:/star-burger/staticfiles/
-      - .:/star-burger/media/
+      - staticdir:/star-burger/staticfiles/
+      - mediadir:/star-burger/media/
     command: >
       bash -c "gunicorn -w 3 -b 0.0.0.0:8080 star_burger.wsgi:application"
     environment:
@@ -35,7 +40,6 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - frontend
       - db
 
 volumes:
